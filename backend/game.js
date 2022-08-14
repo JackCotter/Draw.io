@@ -12,16 +12,13 @@ function createGameState() {
     return {
         player: {
             paint: [
-                {x: 50,y: 50}
+                {x: 50,y: 50, colour: "#222222"},
+                {x: 80,y: 80, colour: "#222222"},
             ],
         }
     }
 }
 
 function addPaint(state, data){
-    let paintData = {
-        x: data.x - 40,
-        y: data.y - 85,
-    }
-    state.player.paint.push(...paintData)
+    state.player.paint.push(...data)
 }

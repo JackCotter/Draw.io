@@ -39,10 +39,16 @@ function mouseup() {
     dragging = false;
 }
 
-function drag (e){
+function drag (data){
     if (dragging === true) {
 
-        socket.emit('drag', e);
+        let paintData = {
+            x: data.x - 40,
+            y: data.y - 85,
+            colour: DRAWING_COLOUR,
+        }
+
+        socket.emit('drag', paintData);
         //ctx.fillStyle = DRAWING_COLOUR;
         //ctx.fillRect(e.x - 40, e.y - 85, 5, 5);
     }
@@ -60,14 +66,14 @@ function click(e) {
     //socket.emit('drag', e);
 }
 
-function paintGame(state){
-    state = JSON.parse(state);
+function paintGame(player){
+    player = JSON.parse(player);
 
-    ctx.fillStyle = DRAWING_COLOUR;
-    //console.log(state);
-    for(let cell in state.player.paint){
+    player.paint.forEach(cell => {
+        ctx.fillStyle = cell.colour;
         ctx.fillRect(cell.x, cell.y, 5, 5);
-    }
+    });
+
 }
 
 init();
