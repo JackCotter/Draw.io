@@ -4,17 +4,51 @@ const GRID_SIZE = 20;
 const socket = io('http://localhost:8080');
 
 socket.on('paint', paintGame);
+socket.on('playerNumber', setPlayerNumber);
+socket.on('unknownGame', handleUnknownGame);
+socket.on('tooManyPlayers', handleTooManyPlayers);
+socket.on('gameOver', handleGameOver);
+socket.on('gameCode', handleGameCode);
 
 const BG_COLOUR = '#231f20';
 const DRAWING_COLOUR = '#666666';
 
-const gameScreen = document.getElementById('gameScreen');
-
 let dragging = false;
+let gameActive = false;
 let canvas, ctx;
+let playerNumber;
+
+const gameScreen = document.getElementById('gameScreen');
+const initialScreen = document.getElementById('initialScreen');
+const newGameBtn = document.getElementById('newGameButton');
+const joinGameBtn = document.getElementById('joinGameButton');
+const gameCodeInput = document.getElementById('gameCodeInput');
+const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+
+newGameBtn.addEventListener('click', () => {
+    socket.emit('newGame');
+    init();
+});
+
+joinGameBtn.addEventListener('click', () => {
+    console.log('gameCodeInput')
+    socket.emit('joinGame', gameCodeInput.value);
+    init();
+});
+
+
+function setPlayerNumber(number) {
+    playerNumber = number;
+}
+
+function handleGameCode(gameCode){
+    gameCodeDisplay.innerText = gameCode;
+}
 
 function init() {
+    initialScreen.style.display = 'none';
     gameScreen.style.display = "block";
+
 
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
@@ -24,6 +58,8 @@ function init() {
     ctx.fillStyle = BG_COLOUR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     socket.emit('newGame');
+
+    gameActive = true;
 
     document.addEventListener('keydown', keydown);
     document.addEventListener('mousedown', mousedown);
@@ -40,7 +76,7 @@ function mouseup() {
 }
 
 function drag (data){
-    if (dragging === true) {
+    if (dragging === true && gameActive === true) {
 
         let paintData = {
             x: data.x - 40,
@@ -48,9 +84,11 @@ function drag (data){
             colour: DRAWING_COLOUR,
         }
 
+        ctx.fillStyle = DRAWING_COLOUR;
+        ctx.fillRect(paintData.x, paintData.y, 5, 5);
+
         socket.emit('drag', paintData);
-        //ctx.fillStyle = DRAWING_COLOUR;
-        //ctx.fillRect(e.x - 40, e.y - 85, 5, 5);
+        
     }
 }
 
@@ -76,4 +114,24 @@ function paintGame(player){
 
 }
 
-init();
+function handleUnknownGame() {
+    reset();
+    alert("Unknown game code");
+}
+
+function handleTooManyPlayers() {
+    alert("This game is already in progress");
+}
+
+function reset() {
+    playerNumber = null;
+    gameCodeInput.value = "";
+    gameCodeDisplay.innerText = "";
+    initialScreen.style.display = "block";
+    gameScreen.style.display = "none";
+}
+
+function handleGameOver(state) {
+    console.log(state);
+    gameActive = false;
+}
