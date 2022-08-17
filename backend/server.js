@@ -15,10 +15,13 @@ io.on('connection', client => {
     client.on('joinGame', handleJoinGame);
 
     function handleNewGame() {
+        console.log(clientRooms);
+        console.log(state)
         let roomName = makeid(5);
         clientRooms[client.id] = roomName;
+        console.log(handleNewGame);
         client.emit('gameCode', roomName);
-
+        console.log(roomName);
         state[roomName] = initGame();
 
         client.join(roomName);

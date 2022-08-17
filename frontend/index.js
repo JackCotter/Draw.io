@@ -1,5 +1,4 @@
-//const { socket } = require("dgram");
-const GRID_SIZE = 20;
+
 
 const socket = io('http://localhost:8080');
 
@@ -26,12 +25,13 @@ const gameCodeInput = document.getElementById('gameCodeInput');
 const gameCodeDisplay = document.getElementById('gameCodeDisplay');
 
 newGameBtn.addEventListener('click', () => {
+    console.log(newGameBtn);
     socket.emit('newGame');
     init();
 });
 
 joinGameBtn.addEventListener('click', () => {
-    console.log('gameCodeInput')
+    console.log('joining' + gameCodeInput.value)
     socket.emit('joinGame', gameCodeInput.value);
     init();
 });
@@ -42,7 +42,8 @@ function setPlayerNumber(number) {
 }
 
 function handleGameCode(gameCode){
-    gameCodeDisplay.innerText = gameCode;
+    console.log(gameCode);
+    gameCodeDisplay.innerText = "hi";
 }
 
 function init() {
