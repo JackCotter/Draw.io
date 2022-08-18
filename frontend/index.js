@@ -43,7 +43,7 @@ function setPlayerNumber(number) {
 
 function handleGameCode(gameCode){
     console.log(gameCode);
-    gameCodeDisplay.innerText = "hi";
+    gameCodeDisplay.innerText = gameCode;
 }
 
 function init() {
@@ -58,7 +58,6 @@ function init() {
 
     ctx.fillStyle = BG_COLOUR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    socket.emit('newGame');
 
     gameActive = true;
 
