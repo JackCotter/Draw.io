@@ -1,6 +1,7 @@
 module.exports = {
     initGame,
     addPaint,
+    gameOverDisplay,
 }
 
 function initGame() {
@@ -25,5 +26,11 @@ function createGameState() {
 }
 
 function addPaint(player, data){
-    player.paint.push(...data)
+    player.paint.push(...data);
+}
+
+function gameOverDisplay(state) {
+    state.players[1].paint.forEach( (pixel) => {
+        pixel.y = pixel.y+600;
+    })
 }

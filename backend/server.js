@@ -1,9 +1,12 @@
-const { initGame, addPaint } = require('./game');
+const { initGame, addPaint, gameOverDisplay } = require('./game');
 const { makeid } = require('./utils');
 
 const GAME_TIME = 10000;
 
-const io = require('socket.io')();
+const io = require('socket.io')({
+    origins: ['http://localhost:8080', 'http://localhost:8080/socket.io/?EIO=3&transport=polling&t=OApqRMt', 'http://127.0.0.1:8080'],
+    credentials: true,
+});
 
 const state = {};
 const clientRooms = {};
@@ -62,9 +65,17 @@ io.on('connection', client => {
     }
 
     function startGameInterval(roomName) {
-        setTimeout(function(){
-            client.emit('gameOver', state[roomName]);
+        setTimeout(() => {
+            console.log(state[roomName])
+            gameOverDisplay(state[roomName]);
+            emitGameOver(roomName);
+            state[roomName] = null;
         }, GAME_TIME);
+    }
+
+    function emitGameOver(roomName) {
+        io.sockets.in(roomName)
+            .emit('gameOver', state[roomName]);
     }
 
     function handleDrag(data) {

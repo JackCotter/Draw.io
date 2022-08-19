@@ -25,7 +25,6 @@ const gameCodeInput = document.getElementById('gameCodeInput');
 const gameCodeDisplay = document.getElementById('gameCodeDisplay');
 
 newGameBtn.addEventListener('click', () => {
-    console.log(newGameBtn);
     socket.emit('newGame');
     init();
 });
@@ -105,7 +104,6 @@ function click(e) {
 }
 
 function paintGame(player){
-    player = JSON.parse(player);
 
     player.paint.forEach(cell => {
         ctx.fillStyle = cell.colour;
@@ -133,5 +131,13 @@ function reset() {
 
 function handleGameOver(state) {
     console.log(state);
+
+    canvas.height = 1200;
+
+    ctx.fillStyle = BG_COLOUR;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    paintGame(state.players[0]);
+    paintGame(state.players[1]);
     gameActive = false;
 }
