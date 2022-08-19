@@ -16,6 +16,7 @@ let dragging = false;
 let gameActive = false;
 let canvas, ctx;
 let playerNumber;
+let previousPixel = null;
 
 const gameScreen = document.getElementById('gameScreen');
 const initialScreen = document.getElementById('initialScreen');
@@ -78,10 +79,12 @@ function drag (data){
     if (dragging === true && gameActive === true) {
 
         let paintData = {
-            x: data.x - 40,
-            y: data.y - 85,
+            x: data.offsetX,
+            y: data.offsetY,
             colour: DRAWING_COLOUR,
         }
+
+        fillInPrevPixels(paintData, previousPixel);
 
         ctx.fillStyle = DRAWING_COLOUR;
         ctx.fillRect(paintData.x, paintData.y, 5, 5);
@@ -89,6 +92,34 @@ function drag (data){
         socket.emit('drag', paintData);
         
     }
+}
+
+function fillInPrevPixels(paintData, prevPixel) {
+    if (prevPixel) {
+        if (!(((prevPixel.x - paintData.x <= 1) && (prevPixel.x - paintData.x >=-1)) && ((prevPixel.y - paintData.y <= 1) && (prevPixel.y - paintData.y >=-1)))) {
+            if(prevPixel.x - paintData.x < 0){
+                newX = paintData.x - 1;
+            }else if(prevPixel.x - paintData.x > 0){
+                newX = paintData.x + 1;
+            }else{
+                newX = paintData.x;
+            }
+
+            if(prevPixel.y - paintData.y < 0){
+                newY = paintData.y - 1;
+            }else if(prevPixel.y - paintData.y > 0){
+                newY = paintData.y + 1;
+            }else {
+                newY = paintData.y;
+            }
+
+            fillInPrevPixels({newX, newY}, prevPixel);
+        }
+    }
+    ctx.fillStyle = DRAWING_COLOUR; console.log(paintData);
+    ctx.fillRect(paintData.x, paintData.y, 5, 5);
+
+    socket.emit('drag', paintData);
 }
 
 function keydown(e) {
