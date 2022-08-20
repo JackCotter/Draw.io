@@ -11,12 +11,15 @@ socket.on('gameCode', handleGameCode);
 
 const BG_COLOUR = '#231f20';
 const DRAWING_COLOUR = '#666666';
+const PIXEL_DENSITY = 100;
 
 let dragging = false;
 let gameActive = false;
 let canvas, ctx;
 let playerNumber;
-let previousPixel = null;
+let previousPixel = {
+    x:0, y:0, start: true
+}
 
 const gameScreen = document.getElementById('gameScreen');
 const initialScreen = document.getElementById('initialScreen');
@@ -86,6 +89,9 @@ function drag (data){
 
         fillInPrevPixels(paintData, previousPixel);
 
+        previousPixel.x = paintData.x;
+        previousPixel.y = paintData.y;
+
         ctx.fillStyle = DRAWING_COLOUR;
         ctx.fillRect(paintData.x, paintData.y, 5, 5);
 
@@ -94,32 +100,23 @@ function drag (data){
     }
 }
 
-function fillInPrevPixels(paintData, prevPixel) {
-    if (prevPixel) {
-        if (!(((prevPixel.x - paintData.x <= 1) && (prevPixel.x - paintData.x >=-1)) && ((prevPixel.y - paintData.y <= 1) && (prevPixel.y - paintData.y >=-1)))) {
-            if(prevPixel.x - paintData.x < 0){
-                newX = paintData.x - 1;
-            }else if(prevPixel.x - paintData.x > 0){
-                newX = paintData.x + 1;
-            }else{
-                newX = paintData.x;
-            }
 
-            if(prevPixel.y - paintData.y < 0){
-                newY = paintData.y - 1;
-            }else if(prevPixel.y - paintData.y > 0){
-                newY = paintData.y + 1;
-            }else {
-                newY = paintData.y;
-            }
-
-            fillInPrevPixels({newX, newY}, prevPixel);
+function fillInPrevPixels(currPixel, prevPixel) {
+    if (prevPixel.start = false) {
+        Xlength = currPixel.x - prevPixel.x;
+        Ylength = currPixel.y - prevPixel.y;
+        Xdelta = Math.ceil(Xlength/PIXEL_DENSITY);
+        Ydelta = Math.ceil(Ylength/PIXEL_DENSITY);
+        for(let i = 0; i<PIXEL_DENSITY; i++) {
+            currPixel.x += Xdelta;
+            currPixel.y += Ydelta;
+            ctx.fillStyle = '#111111'; 
+            ctx.fillRect(currPixel.x, currPixel.y, 5, 5);
+            socket.emit('drag', currPixel);
         }
+    }else{
+        prevPixel.start = false;
     }
-    ctx.fillStyle = DRAWING_COLOUR; console.log(paintData);
-    ctx.fillRect(paintData.x, paintData.y, 5, 5);
-
-    socket.emit('drag', paintData);
 }
 
 function keydown(e) {

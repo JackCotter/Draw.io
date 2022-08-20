@@ -3,10 +3,7 @@ const { makeid } = require('./utils');
 
 const GAME_TIME = 10000;
 
-const io = require('socket.io')({
-    origins: ['http://localhost:8080', 'http://localhost:8080/socket.io/?EIO=3&transport=polling&t=OApqRMt', 'http://127.0.0.1:8080'],
-    credentials: true,
-});
+const io = require('socket.io')();
 
 const state = {};
 const clientRooms = {};
