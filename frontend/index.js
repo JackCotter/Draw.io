@@ -1,6 +1,6 @@
 
 
-const socket = io('http://localhost:8080');
+const socket = io();
 
 socket.on('paint', paintGame);
 socket.on('playerNumber', setPlayerNumber);

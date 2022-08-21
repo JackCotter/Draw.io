@@ -1,5 +1,16 @@
 {
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx live-server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "socket.io-client": "2.1.1"
+    "socket.io": "^4.5.1",
+    "socket.io-client": "^4.5.1"
   }
 }

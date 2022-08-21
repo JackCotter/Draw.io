@@ -1,9 +1,20 @@
 const { initGame, addPaint, gameOverDisplay } = require('./game');
 const { makeid } = require('./utils');
 
-const GAME_TIME = 10000;
+const express = require('express');
+const app = express();
+const path = require('path');
 
-const io = require('socket.io')();
+const http = require('http').Server(app);
+const port = process.env.PORT || 8080;
+
+const io = require('socket.io')(http);
+
+app.get('/', (req,res) => {
+    res.sendFile(path.join(__dirname, "../frontend/index.html"));
+})
+
+const GAME_TIME = 10000;
 
 const state = {};
 const clientRooms = {};
@@ -92,4 +103,6 @@ io.on('connection', client => {
 
 })
 
-io.listen(8080);
+http.listen(port, () => {
+    console.log('app listening on port ' + port);
+})
