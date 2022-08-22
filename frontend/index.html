@@ -42,6 +42,8 @@
                 <div class="d-flex flex-column align-items-center justify-content-center h-100">
         
                   <h1>Your game code is: <span id="gameCodeDisplay"></span></h1>
+                  <h1>You are drawing: <span id="gameInstructions"></span>.</h1>
+                  <h5>Make sure to connect your drawing to the red guides.</h5>
         
                   <canvas id="canvas"></canvas>
                 </div>
@@ -64,9 +66,11 @@
         socket.on('tooManyPlayers', handleTooManyPlayers);
         socket.on('gameOver', handleGameOver);
         socket.on('gameCode', handleGameCode);
+        socket.on('gameInstructions', handleGameInstructions);
 
         const BG_COLOUR = '#f7f0f0';
         const DRAWING_COLOUR = '#666666';
+        const GUIDE_COLOUR = '#f21111'
         const PIXEL_DENSITY = 100;
 
         let dragging = false;
@@ -83,6 +87,7 @@
         const joinGameBtn = document.getElementById('joinGameButton');
         const gameCodeInput = document.getElementById('gameCodeInput');
         const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+        const gameInstructions = document.getElementById('gameInstructions');
 
         newGameBtn.addEventListener('click', () => {
           socket.emit('newGame');
@@ -113,14 +118,14 @@
           canvas = document.getElementById('canvas');
           ctx = canvas.getContext('2d');
 
-          canvas.width = canvas.height = 600;
+          canvas.width = 600;
+          canvas.height = 300;
 
           ctx.fillStyle = BG_COLOUR;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
           gameActive = true;
 
-          document.addEventListener('keydown', keydown);
           document.addEventListener('mousedown', mousedown);
           document.addEventListener('mouseup', mouseup);
           document.addEventListener('mousemove', drag);
@@ -143,7 +148,7 @@
               colour: DRAWING_COLOUR,
             }
 
-            fillInPrevPixels(paintData.x, paintData.y, previousPixel.x, previousPixel.y, previousPixel.start);
+            //fillInPrevPixels(paintData.x, paintData.y, previousPixel.x, previousPixel.y, previousPixel.start);
 
             ctx.fillStyle = "black";
             ctx.fillRect(previousPixel.x, previousPixel.y, 5, 5);
@@ -179,9 +184,18 @@
           }
         }
 
-        function keydown(e) {
-          socket.emit('keydown', e.keyCode);
 
+        function handleGameInstructions(instructions) {
+          gameInstructions.innerText = instructions;
+          if(instructions === "head") {
+            ctx.fillStyle = GUIDE_COLOUR;
+            ctx.fillRect(275, 290, 5, 10);
+            ctx.fillRect(325, 290, 5, 10);
+          }else if(instructions === "legs") {
+            ctx.fillStyle = GUIDE_COLOUR;
+            ctx.fillRect(275, 0, 5, 10);
+            ctx.fillRect(325, 0, 5, 10);
+          }
         }
 
         function click(e) {
@@ -220,7 +234,7 @@
         function handleGameOver(state) {
           console.log(state);
 
-          canvas.height = 1200;
+          canvas.height = 600;
 
           ctx.fillStyle = BG_COLOUR;
           ctx.fillRect(0, 0, canvas.width, canvas.height);

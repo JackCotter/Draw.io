@@ -12,15 +12,9 @@ function initGame() {
 function createGameState() {
     return {
         players: [{
-            paint: [
-                {x: 50,y: 50, colour: "#222222"},
-                {x: 80,y: 80, colour: "#222222"},
-            ],
+            paint: [],
         },{
-            paint:[
-                {x: 50,y: 50, colour: "#222222"},
-                {x: 80,y: 80, colour: "#222222"},
-            ]
+            paint:[]
         }]
     }
 }
@@ -32,7 +26,7 @@ function addPaint(player, data){
 function gameOverDisplay(state) {
     if(state){
         state.players[1].paint.forEach((pixel) => {
-            pixel.y = pixel.y + 600;
+            pixel.y = pixel.y + 300;
         })
     }
 

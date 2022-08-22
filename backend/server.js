@@ -40,6 +40,7 @@ io.on('connection', client => {
         client.join(roomName);
         client.number = 1;
         client.emit('playerNumber', 1);
+        client.emit('gameInstructions', "head");
     }
 
     function handleJoinGame(roomName){
@@ -69,6 +70,7 @@ io.on('connection', client => {
             client.join(roomName);
             client.number = 2;
             client.emit('playerNumber', 2);
+            client.emit('gameInstructions', "legs");
 
             startGameInterval(roomName);
         //}
@@ -94,7 +96,9 @@ io.on('connection', client => {
         if (!roomName) {
             return;
         }
-
+        if(!state){
+            return;
+        }
         currentPlayer = state[roomName].players[client.number - 1];
         //addPaint(currentPlayer, data);
         currentPlayer.paint.push({...data})
