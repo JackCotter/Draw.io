@@ -67,7 +67,7 @@
 
         const BG_COLOUR = '#231f20';
         const DRAWING_COLOUR = '#666666';
-        const PIXEL_DENSITY = 100;
+        const PIXEL_DENSITY = 10;
 
         let dragging = false;
         let gameActive = false;
@@ -143,7 +143,7 @@
               colour: DRAWING_COLOUR,
             }
 
-            fillInPrevPixels(paintData, previousPixel);
+            //fillInPrevPixels(paintData, previousPixel);
 
             previousPixel.x = paintData.x;
             previousPixel.y = paintData.y;
@@ -158,13 +158,14 @@
 
 
         function fillInPrevPixels(currPixel, prevPixel) {
-          if (prevPixel.start = false) {
+          if (prevPixel.start === false) {
             Xlength = currPixel.x - prevPixel.x;
             Ylength = currPixel.y - prevPixel.y;
             Xdelta = Math.ceil(Xlength / PIXEL_DENSITY);
             Ydelta = Math.ceil(Ylength / PIXEL_DENSITY);
+            console.log(Xdelta);console.log(Ydelta);
             for (let i = 0; i < PIXEL_DENSITY; i++) {
-              currPixel.x += Xdelta;
+              currPixel.x += Xdelta; 
               currPixel.y += Ydelta;
               ctx.fillStyle = '#111111';
               ctx.fillRect(currPixel.x, currPixel.y, 5, 5);
@@ -172,6 +173,8 @@
             }
           } else {
             prevPixel.start = false;
+            prevPixel.x = currPixel.x;
+            prevPixel.y = currPixel.y;
           }
         }
 

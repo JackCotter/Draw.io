@@ -109,6 +109,15 @@ io.of("/").adapter.on("join-room", (room, id) => {
     console.log(`socket ${id} has joined room ${room}`);
 });
 
+io.of("/").adapter.on("leave-room", (room, id) => {
+    console.log(`socket ${id} has left room ${room}`);
+});
+
+io.on('disconnection', () => {
+    const roomName = clientRooms[client.id];
+    socket.leave("room-" + roomName);
+})
+
 http.listen(port, () => {
     console.log('app listening on port ' + port);
 })
