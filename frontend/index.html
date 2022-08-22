@@ -46,6 +46,9 @@
                   <h5>Make sure to connect your drawing to the red guides.</h5>
         
                   <canvas id="canvas"></canvas>
+
+                  
+                  <div><button id="green" style="width: 70px;height: 70px;background-color:#00ff99;stroke-width:6;stroke:black;"></button></div>
                 </div>
               </div>
         </div>
@@ -77,8 +80,9 @@
         let gameActive = false;
         let canvas, ctx;
         let playerNumber;
+        let currentColour = DRAWING_COLOUR;
         let previousPixel = {
-          x: 0, y: 0, start: true
+          x: 0, y: 0, start: true, colour:currentColour
         }
 
         const gameScreen = document.getElementById('gameScreen');
@@ -88,6 +92,11 @@
         const gameCodeInput = document.getElementById('gameCodeInput');
         const gameCodeDisplay = document.getElementById('gameCodeDisplay');
         const gameInstructions = document.getElementById('gameInstructions');
+        const greenButton = document.getElementById('green');
+
+        greenButton.addEventListener('click', () => {
+          currentColour = '#00ff99';
+        });
 
         newGameBtn.addEventListener('click', () => {
           socket.emit('newGame');
@@ -145,18 +154,18 @@
             let paintData = {
               x: data.offsetX,
               y: data.offsetY,
-              colour: DRAWING_COLOUR,
+              colour: currentColour,
             }
 
-            //fillInPrevPixels(paintData.x, paintData.y, previousPixel.x, previousPixel.y, previousPixel.start);
+            fillInPrevPixels(paintData.x, paintData.y, previousPixel.x, previousPixel.y, previousPixel.start, currentColour);
 
-            ctx.fillStyle = "black";
-            ctx.fillRect(previousPixel.x, previousPixel.y, 5, 5);
+            
             previousPixel.x = paintData.x;
             previousPixel.y = paintData.y;
+            previousPixel.colour = paintData.colour;
 
 
-            ctx.fillStyle = DRAWING_COLOUR;
+            ctx.fillStyle = currentColour;
             ctx.fillRect(paintData.x, paintData.y, 5, 5);
 
             socket.emit('drag', paintData);
@@ -165,7 +174,7 @@
         }
 
 
-        function fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start) {
+        function fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start, currColour) {
           if (start === false) {
             Xlength = currPixelX - prevPixelX;
             Ylength = currPixelY - prevPixelY;
@@ -175,9 +184,9 @@
             for (let i = 0; i < PIXEL_DENSITY; i++) {
               currPixelX += Xdelta; 
               currPixelY += Ydelta;
-              ctx.fillStyle = '#111111';
+              ctx.fillStyle = currColour;
               ctx.fillRect(currPixelX, currPixelY, 5, 5);
-              socket.emit('drag', {x:currPixelX, y:currPixelY, colour: DRAWING_COLOUR});
+              socket.emit('drag', {x:currPixelX, y:currPixelY, colour: currColour});
             }
           } else {
             previousPixel.start = false;
