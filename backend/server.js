@@ -3,12 +3,16 @@ const { makeid } = require('./utils');
 
 const express = require('express');
 const app = express();
-const path = require('path');
 
-const http = require('http').Server(app);
+const path = require('path');
+const http = require('http').createServer(app);
 const port = process.env.PORT || 8080;
 
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+    cors: {
+        origin: "*"
+    }
+});
 
 app.get('/', (req,res) => {
     res.sendFile(path.join(__dirname, "../frontend/index.html"));
@@ -21,18 +25,16 @@ const clientRooms = {};
 
 io.on('connection', client => {
 
+    console.log(client.id);
+
     client.on('drag', handleDrag);
     client.on('newGame', handleNewGame);
     client.on('joinGame', handleJoinGame);
 
     function handleNewGame() {
-        console.log(clientRooms);
-        console.log(state)
         let roomName = makeid(5);
         clientRooms[client.id] = roomName;
-        console.log(handleNewGame);
         client.emit('gameCode', roomName);
-        console.log(roomName);
         state[roomName] = initGame();
 
         client.join(roomName);
@@ -41,7 +43,7 @@ io.on('connection', client => {
     }
 
     function handleJoinGame(roomName){
-        const room = io.sockets.adapter.rooms[roomName];
+        /*const room = io.sockets.adapter.rooms[roomName];
 
         let allUsers;
         if (room){
@@ -59,7 +61,7 @@ io.on('connection', client => {
         } else if (numClients > 1) {
             client.emit('tooManyPlayers');
             return;
-        } else {
+        } else {*/
             clientRooms[client.id] = roomName;
 
             client.emit('gameCode', roomName);
@@ -69,7 +71,7 @@ io.on('connection', client => {
             client.emit('playerNumber', 2);
 
             startGameInterval(roomName);
-        }
+        //}
     }
 
     function startGameInterval(roomName) {
@@ -101,7 +103,11 @@ io.on('connection', client => {
         //client.emit('paint', stringplayer);
     }
 
-})
+});
+
+io.of("/").adapter.on("join-room", (room, id) => {
+    console.log(`socket ${id} has joined room ${room}`);
+});
 
 http.listen(port, () => {
     console.log('app listening on port ' + port);
