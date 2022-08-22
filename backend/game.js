@@ -30,7 +30,10 @@ function addPaint(player, data){
 }
 
 function gameOverDisplay(state) {
-    state.players[1].paint.forEach( (pixel) => {
-        pixel.y = pixel.y+600;
-    })
+    if(state){
+        state.players[1].paint.forEach((pixel) => {
+            pixel.y = pixel.y + 600;
+        })
+    }
+
 }
