@@ -125,7 +125,7 @@
         const BG_COLOUR = '#f7f0f0';
         const DRAWING_COLOUR = '#666666';
         const GUIDE_COLOUR = '#f21111'
-        const PIXEL_DENSITY = 100;
+        const PIXEL_DENSITY = 10;
 
         let dragging = false;
         let gameActive = false;
@@ -217,6 +217,7 @@
 
         function mouseup() {
           dragging = false;
+          previousPixel.start = true;
         }
 
         function drag(data) {
