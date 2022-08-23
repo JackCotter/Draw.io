@@ -9,6 +9,51 @@
         #gameScreen {
           display: none;
         }
+        #default {
+          width: 50px;
+          height: 50px;
+          background-color:#666666;
+          stroke-width:6;
+          stroke:black;
+          border-radius: 10px;
+          margin: 15px;
+        }
+        #green {
+          width: 50px;
+          height: 50px;
+          background-color:#00ff99;
+          stroke-width:6;
+          stroke:black;
+          border-radius: 10px;
+          margin: 15px;
+        }
+        #blue {
+          width: 50px;
+          height: 50px;
+          background-color:#00ffff;
+          stroke-width:6;
+          stroke:black;
+          border-radius: 10px;
+          margin: 15px;
+        }
+        #red {
+          width: 50px;
+          height: 50px;
+          background-color:#ff0000;
+          stroke-width:6;
+          stroke:black;
+          border-radius: 10px;
+          margin: 15px;
+        }
+        #brown {
+          width: 50px;
+          height: 50px;
+          background-color:#663300;
+          stroke-width:6;
+          stroke:black;
+          border-radius: 10px;
+          margin: 15px;
+        }
       </style>
 </head>
 <body>
@@ -44,11 +89,17 @@
                   <h1>Your game code is: <span id="gameCodeDisplay"></span></h1>
                   <h1>You are drawing: <span id="gameInstructions"></span>.</h1>
                   <h5>Make sure to connect your drawing to the red guides.</h5>
-        
+                  
                   <canvas id="canvas"></canvas>
 
                   
-                  <div><button id="green" style="width: 70px;height: 70px;background-color:#00ff99;stroke-width:6;stroke:black;"></button></div>
+                  <div>
+                    <button id="default"></button>
+                    <button id="green" ></button>
+                    <button id="blue"></button>
+                    <button id="red"></button>
+                    <button id="brown"></button>
+                  </div>
                 </div>
               </div>
         </div>
@@ -92,10 +143,30 @@
         const gameCodeInput = document.getElementById('gameCodeInput');
         const gameCodeDisplay = document.getElementById('gameCodeDisplay');
         const gameInstructions = document.getElementById('gameInstructions');
+        const defaultButton = document.getElementById('default');
         const greenButton = document.getElementById('green');
+        const blueButton = document.getElementById('blue');
+        const redButton = document.getElementById('red');
+        const brownButton = document.getElementById('brown');
+
+        defaultButton.addEventListener('click', () => {
+            currentColour = '#666666';
+        });
 
         greenButton.addEventListener('click', () => {
           currentColour = '#00ff99';
+        });
+
+        blueButton.addEventListener('click', () => {
+          currentColour = '#00ffff';
+        });
+
+        redButton.addEventListener('click', () => {
+            currentColour = '#ff0000';
+        });
+
+        brownButton.addEventListener('click', () => {
+            currentColour = '#663300';
         });
 
         newGameBtn.addEventListener('click', () => {
@@ -242,6 +313,7 @@
 
         function handleGameOver(state) {
           console.log(state);
+          gameInstructions.innerText = "nothing! (you're done)";
 
           canvas.height = 600;
 
