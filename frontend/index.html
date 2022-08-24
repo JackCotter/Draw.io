@@ -121,6 +121,7 @@
         socket.on('gameOver', handleGameOver);
         socket.on('gameCode', handleGameCode);
         socket.on('gameInstructions', handleGameInstructions);
+        socket.on('newRound', handleNewRound);
 
         const BG_COLOUR = '#f7f0f0';
         const DRAWING_COLOUR = '#666666';
@@ -220,6 +221,10 @@
           previousPixel.start = true;
         }
 
+        function isOutsideOfCanvas(data) {
+          return (data.x > canvas.width || data.x < 0 || data.y > canvas.height || data.y < 0);
+        }
+
         function drag(data) {
           if (dragging === true && gameActive === true) {
 
@@ -227,6 +232,11 @@
               x: data.offsetX,
               y: data.offsetY,
               colour: currentColour,
+            }
+
+            if (isOutsideOfCanvas(paintData)) {
+              previousPixel.start = true;
+              return;
             }
 
             fillInPrevPixels(paintData.x, paintData.y, previousPixel.x, previousPixel.y, previousPixel.start, currentColour);
@@ -314,16 +324,34 @@
 
         function handleGameOver(state) {
           console.log(state);
-          gameInstructions.innerText = "nothing! (you're done)";
+          gameInstructions.innerText = "nothing!";
+          defaultButton.style.display = 'none';
+          greenButton.style.display = 'none';
+          blueButton.style.display = 'none';
+          redButton.style.display = 'none';
+          brownButton.style.display = 'none';
+          canvas.style.margin = '10px';
 
-          canvas.height = 600;
+          canvas.height = 1200;
 
           ctx.fillStyle = BG_COLOUR;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
           paintGame(state.players[0]);
           paintGame(state.players[1]);
+          paintGame(state.players[2]);
+          paintGame(state.players[3]);
+
           gameActive = false;
+        }
+
+        function handleNewRound() {
+          init();
+          if(gameInstructions.innerText === "head") {
+            handleGameInstructions("legs");
+          }else if(gameInstructions.innerText === "legs"){
+            handleGameInstructions("head");
+          }
         }
     </script>
 </body>

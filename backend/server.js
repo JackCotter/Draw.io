@@ -1,6 +1,8 @@
 const { initGame, addPaint, gameOverDisplay } = require('./game');
 const { makeid } = require('./utils');
 
+const TWO_PLAYER_DIRECTORY = '/';
+
 const express = require('express');
 const app = express();
 
@@ -14,7 +16,7 @@ const io = require('socket.io')(http, {
     }
 });
 
-app.get('/', (req,res) => {
+app.get(TWO_PLAYER_DIRECTORY, (req,res) => {
     res.sendFile(path.join(__dirname, "../frontend/index.html"));
 })
 
@@ -78,11 +80,15 @@ io.on('connection', client => {
 
     function startGameInterval(roomName) {
         setTimeout(() => {
-            console.log(state[roomName])
+            io.sockets.in(roomName).emit("newRound");
+            updateRoomNumbers(roomName);
+        },GAME_TIME);
+        
+        setTimeout(() => {
             gameOverDisplay(state[roomName]);
             emitGameOver(roomName);
             state[roomName] = null;
-        }, GAME_TIME);
+        }, GAME_TIME*2);
     }
 
     function emitGameOver(roomName) {
@@ -96,11 +102,12 @@ io.on('connection', client => {
         if (!roomName) {
             return;
         }
-        if(!state){
+        if(state.players === null || state === null){
             return;
         }
         currentPlayer = state[roomName].players[client.number - 1];
         //addPaint(currentPlayer, data);
+        //console.log(currentPlayer)
         currentPlayer.paint.push({...data})
         //stringplayer = JSON.stringify(state.player);
         //console.log(currentPlayer);
@@ -109,11 +116,18 @@ io.on('connection', client => {
 
 });
 
-io.of("/").adapter.on("join-room", (room, id) => {
+async function updateRoomNumbers(roomName) {
+    let roomUsers = await io.of(TWO_PLAYER_DIRECTORY).in(roomName).fetchSockets();
+    roomUsers.forEach((client) => {
+        client.number += 2;
+    });
+}
+
+io.of(TWO_PLAYER_DIRECTORY).adapter.on("join-room", (room, id) => {
     console.log(`socket ${id} has joined room ${room}`);
 });
 
-io.of("/").adapter.on("leave-room", (room, id) => {
+io.of(TWO_PLAYER_DIRECTORY).adapter.on("leave-room", (room, id) => {
     console.log(`socket ${id} has left room ${room}`);
 });
 
