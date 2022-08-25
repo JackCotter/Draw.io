@@ -2,24 +2,32 @@
 
 const socket = io();
 
+    socket.on('connect', () => {
+    console.log(socket.id)
+})
+
 socket.on('paint', paintGame);
 socket.on('playerNumber', setPlayerNumber);
 socket.on('unknownGame', handleUnknownGame);
 socket.on('tooManyPlayers', handleTooManyPlayers);
 socket.on('gameOver', handleGameOver);
 socket.on('gameCode', handleGameCode);
+socket.on('gameInstructions', handleGameInstructions);
+socket.on('newRound', handleNewRound);
 
-const BG_COLOUR = '#231f20';
+const BG_COLOUR = '#f7f0f0';
 const DRAWING_COLOUR = '#666666';
-const PIXEL_DENSITY = 100;
+const GUIDE_COLOUR = '#f21111'
+const PIXEL_DENSITY = 10;
 
 let dragging = false;
 let gameActive = false;
-let canvas, ctx;
+let canvas, ctx, canvas2, ctx2;
 let playerNumber;
+let currentColour = DRAWING_COLOUR;
 let previousPixel = {
-    x:0, y:0, start: true
-}
+    x: 0, y: 0, start: true, colour:currentColour
+    }
 
 const gameScreen = document.getElementById('gameScreen');
 const initialScreen = document.getElementById('initialScreen');
@@ -27,145 +35,223 @@ const newGameBtn = document.getElementById('newGameButton');
 const joinGameBtn = document.getElementById('joinGameButton');
 const gameCodeInput = document.getElementById('gameCodeInput');
 const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+const gameInstructions = document.getElementById('gameInstructions');
+const defaultButton = document.getElementById('default');
+const greenButton = document.getElementById('green');
+const blueButton = document.getElementById('blue');
+const redButton = document.getElementById('red');
+const brownButton = document.getElementById('brown');
 
-newGameBtn.addEventListener('click', () => {
+    defaultButton.addEventListener('click', () => {
+    currentColour = '#666666';
+    });
+
+    greenButton.addEventListener('click', () => {
+    currentColour = '#00ff99';
+    });
+
+    blueButton.addEventListener('click', () => {
+    currentColour = '#00ffff';
+    });
+
+    redButton.addEventListener('click', () => {
+    currentColour = '#ff0000';
+    });
+
+    brownButton.addEventListener('click', () => {
+    currentColour = '#663300';
+    });
+
+    newGameBtn.addEventListener('click', () => {
     socket.emit('newGame');
-    init();
-});
+init();
+    });
 
-joinGameBtn.addEventListener('click', () => {
+    joinGameBtn.addEventListener('click', () => {
     console.log('joining' + gameCodeInput.value)
-    socket.emit('joinGame', gameCodeInput.value);
-    init();
-});
+        socket.emit('joinGame', gameCodeInput.value);
+init();
+    });
 
 
 function setPlayerNumber(number) {
     playerNumber = number;
-}
+    }
 
-function handleGameCode(gameCode){
+function handleGameCode(gameCode) {
     console.log(gameCode);
-    gameCodeDisplay.innerText = gameCode;
-}
+gameCodeDisplay.innerText = gameCode;
+    }
 
 function init() {
     initialScreen.style.display = 'none';
-    gameScreen.style.display = "block";
+gameScreen.style.display = "block";
 
+canvas = document.getElementById('canvas');
+ctx = canvas.getContext('2d');
 
-    canvas = document.getElementById('canvas');
-    ctx = canvas.getContext('2d');
+canvas2 = document.getElementById('canvas2');
+ctx2 = canvas2.getContext('2d');
 
-    canvas.width = canvas.height = 600;
+canvas2.style.display = 'none';
 
-    ctx.fillStyle = BG_COLOUR;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+canvas.width = 600;
+canvas.height = 300;
 
-    gameActive = true;
+ctx.fillStyle = BG_COLOUR;
+ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    document.addEventListener('keydown', keydown);
-    document.addEventListener('mousedown', mousedown);
-    document.addEventListener('mouseup', mouseup);
-    document.addEventListener('mousemove', drag);
-}
+gameActive = true;
+
+document.addEventListener('mousedown', mousedown);
+document.addEventListener('mouseup', mouseup);
+document.addEventListener('mousemove', drag);
+    }
 
 function mousedown() {
     dragging = true;
-}
+    }
 
 function mouseup() {
     dragging = false;
-}
+previousPixel.start = true;
+    }
 
-function drag (data){
-    if (dragging === true && gameActive === true) {
+function isOutsideOfCanvas(data) {
+        return (data.x > canvas.width || data.x < 0 || data.y > canvas.height || data.y < 0);
+    }
 
-        let paintData = {
-            x: data.offsetX,
-            y: data.offsetY,
-            colour: DRAWING_COLOUR,
+function drag(data) {
+        if (dragging === true && gameActive === true) {
+
+    let paintData = {
+    x: data.offsetX,
+y: data.offsetY,
+colour: currentColour,
         }
 
-        fillInPrevPixels(paintData, previousPixel);
-
-        previousPixel.x = paintData.x;
-        previousPixel.y = paintData.y;
-
-        ctx.fillStyle = DRAWING_COLOUR;
-        ctx.fillRect(paintData.x, paintData.y, 5, 5);
-
-        socket.emit('drag', paintData);
-        
-    }
-}
-
-
-function fillInPrevPixels(currPixel, prevPixel) {
-    if (prevPixel.start = false) {
-        Xlength = currPixel.x - prevPixel.x;
-        Ylength = currPixel.y - prevPixel.y;
-        Xdelta = Math.ceil(Xlength/PIXEL_DENSITY);
-        Ydelta = Math.ceil(Ylength/PIXEL_DENSITY);
-        for(let i = 0; i<PIXEL_DENSITY; i++) {
-            currPixel.x += Xdelta;
-            currPixel.y += Ydelta;
-            ctx.fillStyle = '#111111'; 
-            ctx.fillRect(currPixel.x, currPixel.y, 5, 5);
-            socket.emit('drag', currPixel);
+if (isOutsideOfCanvas(paintData)) {
+    previousPixel.start = true;
+return;
         }
-    }else{
-        prevPixel.start = false;
+
+fillInPrevPixels(paintData.x, paintData.y, previousPixel.x, previousPixel.y, previousPixel.start, currentColour);
+
+
+previousPixel.x = paintData.x;
+previousPixel.y = paintData.y;
+previousPixel.colour = paintData.colour;
+
+
+ctx.fillStyle = currentColour;
+ctx.fillRect(paintData.x, paintData.y, 5, 5);
+
+socket.emit('drag', paintData);
+
+        }
     }
-}
 
-function keydown(e) {
-    socket.emit('keydown', e.keyCode);
 
-}
+function fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start, currColour) {
+        if (start === false) {
+    Xlength = currPixelX - prevPixelX;
+Ylength = currPixelY - prevPixelY;
+Xdelta = (Xlength / PIXEL_DENSITY);
+Ydelta = (Ylength / PIXEL_DENSITY);
+console.log(Xdelta);console.log(Ydelta);
+for (let i = 0; i < PIXEL_DENSITY; i++) {
+    currPixelX += Xdelta;
+currPixelY += Ydelta;
+ctx.fillStyle = currColour;
+ctx.fillRect(currPixelX, currPixelY, 5, 5);
+socket.emit('drag', {x:currPixelX, y:currPixelY, colour: currColour});
+        }
+        } else {
+    previousPixel.start = false;
+        }
+    }
+
+
+function handleGameInstructions(instructions) {
+    gameInstructions.innerText = instructions;
+if(instructions === "head") {
+    ctx.fillStyle = GUIDE_COLOUR;
+ctx.fillRect(275, 290, 5, 10);
+ctx.fillRect(325, 290, 5, 10);
+        }else if(instructions === "legs") {
+    ctx.fillStyle = GUIDE_COLOUR;
+ctx.fillRect(275, 0, 5, 10);
+ctx.fillRect(325, 0, 5, 10);
+        }
+    }
 
 function click(e) {
     //console.log(e);
     ctx.fillStyle = DRAWING_COLOUR;
-    ctx.fillRect(e.x, e.y, 5, 5);
-    //socket.emit('drag', e);
-}
+ctx.fillRect(e.x, e.y, 5, 5);
+        //socket.emit('drag', e);
+    }
 
-function paintGame(player){
+function paintGame(player, ctx) {
 
     player.paint.forEach(cell => {
         ctx.fillStyle = cell.colour;
         ctx.fillRect(cell.x, cell.y, 5, 5);
     });
 
-}
+    }
 
 function handleUnknownGame() {
     reset();
-    alert("Unknown game code");
-}
+alert("Unknown game code");
+    }
 
 function handleTooManyPlayers() {
-    alert("This game is already in progress");
-}
+    reset();
+alert("This game is already in progress");
+    }
 
 function reset() {
     playerNumber = null;
-    gameCodeInput.value = "";
-    gameCodeDisplay.innerText = "";
-    initialScreen.style.display = "block";
-    gameScreen.style.display = "none";
-}
+gameCodeInput.value = "";
+gameCodeDisplay.innerText = "";
+initialScreen.style.display = "block";
+gameScreen.style.display = "none";
+    }
 
 function handleGameOver(state) {
     console.log(state);
+gameInstructions.innerText = "nothing!";
+defaultButton.style.display = 'none';
+greenButton.style.display = 'none';
+blueButton.style.display = 'none';
+redButton.style.display = 'none';
+brownButton.style.display = 'none';
+canvas2.style.display = 'flex';
+canvas.style.display = 'flex';
 
-    canvas.height = 1200;
+canvas.height = 600;
+canvas2.height = canvas2.width = 600;
 
-    ctx.fillStyle = BG_COLOUR;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx2.fillStyle = BG_COLOUR;
+ctx2.fillRect(0, 0, canvas.width, canvas.height);
 
-    paintGame(state.players[0]);
-    paintGame(state.players[1]);
-    gameActive = false;
-}
+ctx.fillStyle = BG_COLOUR;
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+paintGame(state.players[0], ctx);
+paintGame(state.players[1], ctx);
+paintGame(state.players[2], ctx2);
+paintGame(state.players[3], ctx2);
+
+gameActive = false;
+    }
+
+function handleNewRound() {
+    init();
+if(gameInstructions.innerText === "head") {
+    handleGameInstructions("legs");
+        }else if(gameInstructions.innerText === "legs"){
+    handleGameInstructions("head");
+        }
+    }
