@@ -2,6 +2,7 @@ const { initGame, addPaint, gameOverDisplay } = require('./game');
 const { makeid } = require('./utils');
 
 const TWO_PLAYER_DIRECTORY = '/';
+const GAME_TIME = 10000;
 
 const express = require('express');
 const app = express();
@@ -30,7 +31,7 @@ app.get('/style.css', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/style.css'));
 })
 
-const GAME_TIME = 10000;
+
 
 const state = {};
 const clientRooms = {};
