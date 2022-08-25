@@ -91,6 +91,7 @@
                   <h5>Make sure to connect your drawing to the red guides.</h5>
                   
                   <canvas id="canvas"></canvas>
+                  <canvas id="canvas2"></canvas>
 
                   
                   <div>
@@ -130,7 +131,7 @@
 
         let dragging = false;
         let gameActive = false;
-        let canvas, ctx;
+        let canvas, ctx, canvas2, ctx2;
         let playerNumber;
         let currentColour = DRAWING_COLOUR;
         let previousPixel = {
@@ -195,9 +196,13 @@
           initialScreen.style.display = 'none';
           gameScreen.style.display = "block";
 
-
           canvas = document.getElementById('canvas');
           ctx = canvas.getContext('2d');
+
+          canvas2 = document.getElementById('canvas2');
+          ctx2 = canvas2.getContext('2d');
+
+          canvas2.style.display = 'none';
 
           canvas.width = 600;
           canvas.height = 300;
@@ -296,7 +301,7 @@
           //socket.emit('drag', e);
         }
 
-        function paintGame(player) {
+        function paintGame(player, ctx) {
 
           player.paint.forEach(cell => {
             ctx.fillStyle = cell.colour;
@@ -311,6 +316,7 @@
         }
 
         function handleTooManyPlayers() {
+          reset();
           alert("This game is already in progress");
         }
 
@@ -330,17 +336,22 @@
           blueButton.style.display = 'none';
           redButton.style.display = 'none';
           brownButton.style.display = 'none';
-          canvas.style.margin = '10px';
+          canvas2.style.display = 'flex';
+          canvas.style.display = 'flex';
 
-          canvas.height = 1200;
+          canvas.height = 600;
+          canvas2.height = canvas2.width = 600;
+
+          ctx2.fillStyle = BG_COLOUR;
+          ctx2.fillRect(0, 0, canvas.width, canvas.height);
 
           ctx.fillStyle = BG_COLOUR;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-          paintGame(state.players[0]);
-          paintGame(state.players[1]);
-          paintGame(state.players[2]);
-          paintGame(state.players[3]);
+          paintGame(state.players[0], ctx);
+          paintGame(state.players[1], ctx);
+          paintGame(state.players[2], ctx2);
+          paintGame(state.players[3], ctx2);
 
           gameActive = false;
         }

@@ -45,26 +45,17 @@ io.on('connection', client => {
         client.emit('gameInstructions', "head");
     }
 
-    function handleJoinGame(roomName){
-        /*const room = io.sockets.adapter.rooms[roomName];
-
-        let allUsers;
-        if (room){
-            allUsers = room.sockets;
-        }
-
-        let numClients = 0;
-        if (allUsers) {
-            numClients = Object.keys(allUsers).length;
-        }
-
+    async function handleJoinGame(roomName){
+        socketsInRoom = await io.of(TWO_PLAYER_DIRECTORY).in(roomName).fetchSockets();
+        numClients = socketsInRoom.length;
+        console.log(numClients);
         if (numClients === 0) {
             client.emit('unknownGame');
             return;
         } else if (numClients > 1) {
             client.emit('tooManyPlayers');
             return;
-        } else {*/
+        } else {
             clientRooms[client.id] = roomName;
 
             client.emit('gameCode', roomName);
@@ -75,7 +66,7 @@ io.on('connection', client => {
             client.emit('gameInstructions', "legs");
 
             startGameInterval(roomName);
-        //}
+        }
     }
 
     function startGameInterval(roomName) {
@@ -122,6 +113,7 @@ async function updateRoomNumbers(roomName) {
         client.number += 2;
     });
 }
+
 
 io.of(TWO_PLAYER_DIRECTORY).adapter.on("join-room", (room, id) => {
     console.log(`socket ${id} has joined room ${room}`);

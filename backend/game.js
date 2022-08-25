@@ -33,11 +33,8 @@ function gameOverDisplay(state) {
         state.players[1].paint.forEach((pixel) => {
             pixel.y = pixel.y + 300;
         });
-        state.players[3].paint.forEach((pixel) => {
-            pixel.y = pixel.y + 600;
-        });
         state.players[2].paint.forEach((pixel) => {
-            pixel.y = pixel.y + 900;
+            pixel.y = pixel.y + 300;
         });
     }
 
