@@ -182,8 +182,8 @@ function fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start,
 }
 
 
-function handleGameInstructions(instructions) {
-    instructions = instructions;
+function handleGameInstructions(currentInstructions) {
+    instructions = currentInstructions;
 }
 
 function drawGameInstructions() {

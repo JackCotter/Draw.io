@@ -68,9 +68,6 @@ io.on('connection', client => {
             return;
         } else {
             clientRooms[client.id] = roomName;
-
-            client.emit('gameCode', roomName);
-
             client.join(roomName);
             client.number = 2;
             client.emit('playerNumber', 2);
