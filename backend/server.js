@@ -75,7 +75,7 @@ io.on('connection', client => {
             client.number = 2;
             client.emit('playerNumber', 2);
             client.emit('gameInstructions', "legs");
-
+            io.of(TWO_PLAYER_DIRECTORY).in(roomName).emit('gameStart');
             startGameInterval(roomName);
         }
     }

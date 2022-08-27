@@ -13,6 +13,7 @@ socket.on('gameOver', handleGameOver);
 socket.on('gameCode', handleGameCode);
 socket.on('gameInstructions', handleGameInstructions);
 socket.on('newRound', handleNewRound);
+socket.on('gameStart', init);
 
 const BG_COLOUR = '#f7f0f0';
 const DRAWING_COLOUR = '#666666';
@@ -23,7 +24,7 @@ const GAME_TIME = 10000;
 let dragging = false;
 let gameActive = false;
 let canvas, ctx, canvas2, ctx2;
-let playerNumber;
+let playerNumber, instructions;
 let currentColour = DRAWING_COLOUR;
 let previousPixel = {
     x: 0, y: 0, start: true, colour:currentColour
@@ -42,6 +43,7 @@ const blueButton = document.getElementById('blue');
 const redButton = document.getElementById('red');
 const brownButton = document.getElementById('brown');
 const timer = document.getElementById('timer');
+const waitingScreen = document.getElementById('waitingScreen');
 
     defaultButton.addEventListener('click', () => {
         currentColour = '#666666';
@@ -65,18 +67,22 @@ const timer = document.getElementById('timer');
 
     newGameBtn.addEventListener('click', () => {
         socket.emit('newGame');
-        init();
+        setupWaitingScreen();
     });
 
     joinGameBtn.addEventListener('click', () => {
         console.log('joining' + gameCodeInput.value)
         socket.emit('joinGame', gameCodeInput.value);
-        init();
     });
 
 
 function setPlayerNumber(number) {
     playerNumber = number;
+}
+
+function setupWaitingScreen() {
+    initialScreen.style.display = 'none';
+    waitingScreen.style.display = 'block';
 }
 
 function handleGameCode(gameCode) {
@@ -86,7 +92,8 @@ function handleGameCode(gameCode) {
 
 function init() {
     initialScreen.style.display = 'none';
-    gameScreen.style.display = "block";
+    gameScreen.style.display = 'block';
+    waitingScreen.style.display = 'none';
 
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
@@ -107,6 +114,7 @@ function init() {
     document.addEventListener('mousedown', mousedown);
     document.addEventListener('mouseup', mouseup);
     document.addEventListener('mousemove', drag);
+    drawGameInstructions();
     startTimer();
 }
 
@@ -175,6 +183,10 @@ function fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start,
 
 
 function handleGameInstructions(instructions) {
+    instructions = instructions;
+}
+
+function drawGameInstructions() {
     gameInstructions.innerText = instructions;
     if(instructions === "head") {
         ctx.fillStyle = GUIDE_COLOUR;
