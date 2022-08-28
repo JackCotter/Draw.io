@@ -90,8 +90,8 @@ io.on('connection', client => {
                     roundsLeft -= 1;
                     currentTime = GAME_TIME;
                     io.sockets.in(roomName).emit("newRound");
-                    checkIfActive();
                     updateRoomNumbers(roomName);
+                    checkIfActive();
                 } else {
                     gameOverDisplay(state[roomName]);
                     emitGameOver(roomName);
@@ -125,7 +125,7 @@ io.on('connection', client => {
         if (!roomName) {
             return;
         }
-        if(data.players === null || data === null){
+        if(state.players === null || state === null){
             return;
         }
         currentPlayer = state[roomName].players[client.number - 1];

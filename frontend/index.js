@@ -115,6 +115,8 @@ function init() {
     document.addEventListener('mousedown', mousedown);
     document.addEventListener('mouseup', mouseup);
     document.addEventListener('mousemove', drag);
+    canvas.addEventListener('mouseleave', isOutsideOfCanvas);
+    canvas.addEventListener('mouseenter', isInsideOfCanvas);
     drawGameInstructions();
     
 }
@@ -128,12 +130,18 @@ function mouseup() {
     previousPixel.start = true;
 }
 
-function isOutsideOfCanvas(x, y) {
-        return (x > canvas.right || x < canvas.left || y > canvas.top || y < canvas.bottom);
+function isOutsideOfCanvas() {
+    mouseInCanvas = false;
+}
+
+function isInsideOfCanvas() {
+    mouseInCanvas = true;
 }
 
 function drag(data) {
     if (dragging === true && gameActive === true) {
+        console.log(data.clientX);
+        console.log(canvas.offsetRight);
 
         let paintData = {
             x: data.offsetX,
@@ -141,7 +149,7 @@ function drag(data) {
             colour: currentColour,
         }
 
-        if (isOutsideOfCanvas(data.x, data.y)) {
+        if (!mouseInCanvas) {
             previousPixel.start = true;
             return;
         }
@@ -162,26 +170,7 @@ function drag(data) {
     }
 }
 
-/*
-function fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start, currColour) {
-    if (start === false) {
-        Xlength = currPixelX - prevPixelX;
-        Ylength = currPixelY - prevPixelY;
-        Xdelta = (Xlength / PIXEL_DENSITY);
-        Ydelta = (Ylength / PIXEL_DENSITY);
-        console.log(Xdelta);console.log(Ydelta);
-        for (let i = 0; i < PIXEL_DENSITY; i++) {
-        currPixelX += Xdelta;
-        currPixelY += Ydelta;
-        ctx.fillStyle = currColour;
-        ctx.fillRect(currPixelX, currPixelY, 5, 5);
-        socket.emit('drag', {x:currPixelX, y:currPixelY, colour: currColour});
-        }
-    } else {
-        previousPixel.start = false;
-    }
-}
-*/
+
 function fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start, currColour) {
     deltaX = currPixelX - prevPixelX;
     deltaY = currPixelY - prevPixelY;
@@ -235,7 +224,6 @@ function click(e) {
 }
 
 function paintGame(player, ctx) {
-
     player.paint.forEach(cell => {
         ctx.fillStyle = cell.colour;
         ctx.fillRect(cell.x, cell.y, 5, 5);
@@ -262,6 +250,7 @@ function reset() {
 }
 
 function handleGameOver(state) {
+    gameActive = false;
     console.log(state);
     gameInstructions.innerText = "nothing!";
     defaultButton.style.display = 'none';
@@ -285,8 +274,6 @@ function handleGameOver(state) {
     paintGame(state.players[1], ctx);
     paintGame(state.players[2], ctx2);
     paintGame(state.players[3], ctx2);
-
-    gameActive = false;
 }
 
 function handleNewRound() {
