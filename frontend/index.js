@@ -14,6 +14,7 @@ socket.on('gameCode', handleGameCode);
 socket.on('gameInstructions', handleGameInstructions);
 socket.on('newRound', handleNewRound);
 socket.on('gameStart', init);
+socket.on('timeLeft', updateTime)
 
 const BG_COLOUR = '#f7f0f0';
 const DRAWING_COLOUR = '#666666';
@@ -262,28 +263,18 @@ function handleGameOver(state) {
 }
 
 function handleNewRound() {
-    init();
     if(gameInstructions.innerText === "head") {
         handleGameInstructions("legs");
-    }else if(gameInstructions.innerText === "legs"){
+    } else if(gameInstructions.innerText === "legs") {
         handleGameInstructions("head");
-    }
+    } 
+    
+    init();
 }
 
-function startTimer() {
-    var currentTime = GAME_TIME;
-    function notEndOfRound() {};
-    function checkEndOfRound() {
-        setInterval(() => {
-            timer.innerHTML = Math.floor(currentTime/1000);
-            currentTime -= 1000;
-            if (currentTime > 0){
-                notEndOfRound();
-            }
-        }, 1000);
-    }
-    checkEndOfRound();
+function updateTime(currentTime) {
+    timer.innerText = currentTime;
     if (currentTime < 0) {
-        timer.innerHTML = "Round Over!";
+        timer.innerText = "Round Over!";
     }
 }

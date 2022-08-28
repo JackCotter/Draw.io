@@ -78,16 +78,40 @@ io.on('connection', client => {
     }
 
     function startGameInterval(roomName) {
-        setTimeout(() => {
+        let currentTime = GAME_TIME;
+        let roundsLeft = 1;
+        function checkIfActive() {
+            setTimeout(() => {
+                currentTime -= 1000;
+                io.of(TWO_PLAYER_DIRECTORY).in(roomName).emit('timeLeft', currentTime/1000);
+                if(currentTime > 0) {
+                    checkIfActive();
+                } else if(roundsLeft > 0){
+                    roundsLeft -= 1;
+                    currentTime = GAME_TIME;
+                    io.sockets.in(roomName).emit("newRound");
+                    checkIfActive();
+                    updateRoomNumbers(roomName);
+                } else {
+                    gameOverDisplay(state[roomName]);
+                    emitGameOver(roomName);
+                    state[roomName] = null;
+                }
+            }, 1000);
+        }
+        checkIfActive();
+        
+
+        /*setTimeout(() => {
             io.sockets.in(roomName).emit("newRound");
             updateRoomNumbers(roomName);
-        },GAME_TIME);
+            setTimeout(() => {
+                gameOverDisplay(state[roomName]);
+                emitGameOver(roomName);
+                state[roomName] = null;
+            }, GAME_TIME);
+        },GAME_TIME);*/
         
-        setTimeout(() => {
-            gameOverDisplay(state[roomName]);
-            emitGameOver(roomName);
-            state[roomName] = null;
-        }, GAME_TIME*2);
     }
 
     function emitGameOver(roomName) {
@@ -101,7 +125,7 @@ io.on('connection', client => {
         if (!roomName) {
             return;
         }
-        if(state.players === null || state === null){
+        if(data.players === null || data === null){
             return;
         }
         currentPlayer = state[roomName].players[client.number - 1];
