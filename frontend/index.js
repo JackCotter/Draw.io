@@ -116,7 +116,7 @@ function init() {
     document.addEventListener('mouseup', mouseup);
     document.addEventListener('mousemove', drag);
     drawGameInstructions();
-    startTimer();
+    
 }
 
 function mousedown() {
@@ -128,8 +128,8 @@ function mouseup() {
     previousPixel.start = true;
 }
 
-function isOutsideOfCanvas(data) {
-        return (data.x > canvas.width || data.x < 0 || data.y > canvas.height || data.y < 0);
+function isOutsideOfCanvas(x, y) {
+        return (x > canvas.right || x < canvas.left || y > canvas.top || y < canvas.bottom);
 }
 
 function drag(data) {
@@ -141,7 +141,7 @@ function drag(data) {
             colour: currentColour,
         }
 
-        if (isOutsideOfCanvas(paintData)) {
+        if (isOutsideOfCanvas(data.x, data.y)) {
             previousPixel.start = true;
             return;
         }
@@ -162,7 +162,7 @@ function drag(data) {
     }
 }
 
-
+/*
 function fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start, currColour) {
     if (start === false) {
         Xlength = currPixelX - prevPixelX;
@@ -181,7 +181,34 @@ function fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start,
         previousPixel.start = false;
     }
 }
+*/
+function fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start, currColour) {
+    deltaX = currPixelX - prevPixelX;
+    deltaY = currPixelY - prevPixelY;
+    if(start) {
+        previousPixel.start = false;
+        return;
+    }
+    ctx.fillStyle = currColour;
+    ctx.fillRect(currPixelX, currPixelY, 5, 5);
+    socket.emit('drag', {x:currPixelX, y:currPixelY, colour:currentColour})
+    if((deltaX < -5) || (deltaX > 5) || (deltaY < -5) || (deltaY > 5)) {
+    
+        if(currPixelX > prevPixelX) {
+            currPixelX -= 1;
+        } else {
+            currPixelX += 1;
+        }
 
+        if(currPixelY > prevPixelY) {
+            currPixelY -= 1;
+        } else {
+            currPixelY += 1;
+        }
+
+        fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start, currColour);
+    }
+}
 
 function handleGameInstructions(currentInstructions) {
     instructions = currentInstructions;
