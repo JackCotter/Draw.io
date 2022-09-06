@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="style.css"
 </head>
 <body>
-    <section class="vh-100">
+      <div id = parentDiv style="width: 100%">
+      <div id= "pencil"></div>
+      <section class="vh-100">
         <div class="container h-100">
             <div id="initialScreen" class="h-100">
                 <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                    <h1>Drawing Game!!</h1>
+                    <h1 id="title">Drawing Game!!</h1>
                     <button
                       type="submit"
                       class="btn btn-success"
@@ -58,9 +60,28 @@
                 </div>
               </div>
         </div>
-    </section>
+        </section>
+        </div>
+    
 
     <script src="socket.io/socket.io.js"></script>
     <script src="index.js"></script>
+    <script>
+      var pencil = document.getElementById("pencil");
+      var parentDiv = document.getElementById("parentDiv");
+      
+      var makeLine = function(pixel) {
+        var rect = pixel.getBoundingClientRect();
+        this.div = document.createElement("div");
+        this.div.classList.add('drawLine');
+        this.div.style.left = rect.left + "px";
+        this.div.style.top = rect.top + "px";
+        parentDiv.appendChild(this.div)
+        setTimeout(() => {
+          makeLine(pixel);
+        }, 1);
+      }
+      makeLine(pencil);
+    </script>
 </body>
 </html>

@@ -44,7 +44,9 @@ const blueButton = document.getElementById('blue');
 const redButton = document.getElementById('red');
 const brownButton = document.getElementById('brown');
 const timer = document.getElementById('timer');
+
 const waitingScreen = document.getElementById('waitingScreen');
+
 
     defaultButton.addEventListener('click', () => {
         currentColour = '#666666';
@@ -95,6 +97,7 @@ function init() {
     initialScreen.style.display = 'none';
     gameScreen.style.display = 'block';
     waitingScreen.style.display = 'none';
+
 
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
@@ -247,6 +250,7 @@ function reset() {
     gameCodeDisplay.innerText = "";
     initialScreen.style.display = "block";
     gameScreen.style.display = "none";
+    drawLine.style.display = "block";
 }
 
 function handleGameOver(state) {
@@ -286,8 +290,10 @@ function handleNewRound() {
     init();
 }
 
+
 function updateTime(currentTime) {
     timer.innerText = currentTime;
+
     if (currentTime < 0) {
         timer.innerText = "Round Over!";
     }

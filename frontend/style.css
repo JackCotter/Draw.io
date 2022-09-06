@@ -60,3 +60,161 @@
     border-radius: 10px;
     margin: 15px;
 }
+
+#title {
+    animation-name: titleCard;
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
+}
+
+#pencil {
+    position: absolute;
+    top: 25%;
+    left: 0%;
+    background-color: yellow;
+    height: 50px;
+    width: 5px;
+    transition: rotate(10deg);
+    animation-name: pencildraw;
+    animation-duration: 20s;
+    animation-timing-function: linear;
+}
+
+.drawLine {
+    position: absolute;
+    background: orange;
+    width: 4px;
+    height: 4px;
+}
+
+@keyframes pencildraw {
+    0% {
+        top: 25%;
+        left: 0%;
+        background-color: blue;
+    }
+    20% {
+        top: 25%;
+        left: 35%;
+        background-color: blue;
+    }22% {
+        top: 35%;
+        left: 32%;
+        background-color: blue;
+    }
+    23%{
+        top: 31%;
+        left: 30%;
+        background-color: blue;
+    }25%{
+        top: 28%;
+        left: 40%;
+        background-color: blue;
+    }27%  {
+        top: 30%;
+        left: 38%;
+        background-color: blue;
+    }30% {
+        top: 32%;
+        left: 38%;
+        background-color: blue;
+    }32% {
+        top: 35%;
+        left: 40%;
+        background-color: blue;
+    }35% {
+        top: 32%;
+        left: 42%;
+        background-color: blue;
+    }37% {
+        top: 30%;
+        left: 42%;
+        background-color: blue;
+    } 40% {
+        top: 28%;
+        left: 40%;
+        background-color: blue;
+    } 42% {
+        top: 35%;
+        left: 45%;
+        background-color: blue;
+    } 45% {
+        top: 35%;
+        left: 50%;
+        background-color: blue;
+    } 47% {
+        top: 33%;
+        left: 46%;
+        background-color: blue;
+    } 49% {
+        top: 30%;
+        left: 46%;
+        background-color: blue;
+    } 55% {
+        top: 28%;
+        left: 50%;
+        background-color: blue;
+    } 60% {
+        top: 25%;
+        left: 55%;
+        background-color: blue;
+    } 62% {
+        top: 35%;
+        left: 55%;
+        background-color: blue;
+    } 65% {
+        top: 30%;
+        left: 55%;
+        background-color: blue;
+    } 67% {
+        top: 25%;
+        left: 60%;
+        background-color: blue;
+    } 70% {
+        top: 30%;
+        left: 55%;
+        background-color: blue;
+    } 75% {
+        top: 35%;
+        left: 60%;
+        background-color: blue;
+    } 80% {
+        top: 35%;
+        left: 65%;
+        background-color: blue;
+    } 85% {
+        top: 32%;
+        left: 70%;
+        background-color: blue;
+    } 90% {
+        top: 28%;
+        left: 65%;
+        background-color: blue;
+    } 95% {
+        top: 25%;
+        left: 70%;
+        background-color: blue;
+    } 100% {
+        top: 25%;
+        left: 100%;
+        background-color: blue;
+    }
+}
+
+@keyframes titleCard {
+    0% {
+            font-family: "Times New Roman", Times, serif;
+        }
+    
+    25% {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    
+    50% {
+            font-family: "Lucida Console", "Courier New", monospace;
+        }
+    
+    100% {
+            font-family: "Times New Roman", Times, serif;
+        }
+}
