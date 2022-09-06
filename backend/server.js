@@ -80,6 +80,7 @@ io.on('connection', client => {
     function startGameInterval(roomName) {
         let currentTime = GAME_TIME;
         let roundsLeft = 1;
+        io.of(TWO_PLAYER_DIRECTORY).in(roomName).emit('timeLeft', currentTime/1000);
         function checkIfActive() {
             setTimeout(() => {
                 currentTime -= 1000;
@@ -100,18 +101,6 @@ io.on('connection', client => {
             }, 1000);
         }
         checkIfActive();
-        
-
-        /*setTimeout(() => {
-            io.sockets.in(roomName).emit("newRound");
-            updateRoomNumbers(roomName);
-            setTimeout(() => {
-                gameOverDisplay(state[roomName]);
-                emitGameOver(roomName);
-                state[roomName] = null;
-            }, GAME_TIME);
-        },GAME_TIME);*/
-        
     }
 
     function emitGameOver(roomName) {
@@ -129,12 +118,8 @@ io.on('connection', client => {
             return;
         }
         currentPlayer = state[roomName].players[client.number - 1];
-        //addPaint(currentPlayer, data);
-        //console.log(currentPlayer)
         currentPlayer.paint.push({...data})
-        //stringplayer = JSON.stringify(state.player);
-        //console.log(currentPlayer);
-        //client.emit('paint', stringplayer);
+        client.emit('paint', currentPlayer);
     }
 
 });

@@ -5,7 +5,7 @@ socket.on('connect', () => {
     console.log(socket.id);
 });
 
-socket.on('paint', paintGame);
+socket.on('paint', updateCurrentPaint);
 socket.on('playerNumber', setPlayerNumber);
 socket.on('unknownGame', handleUnknownGame);
 socket.on('tooManyPlayers', handleTooManyPlayers);
@@ -24,8 +24,9 @@ const GAME_TIME = 10000;
 
 let dragging = false;
 let gameActive = false;
-let canvas, ctx, canvas2, ctx2;
+let canvas, ctx, canvas2, ctx2, imageData;
 let playerNumber, instructions;
+let isFilling = false;
 let currentColour = DRAWING_COLOUR;
 let previousPixel = {
     x: 0, y: 0, start: true, colour:currentColour
@@ -43,6 +44,7 @@ const greenButton = document.getElementById('green');
 const blueButton = document.getElementById('blue');
 const redButton = document.getElementById('red');
 const brownButton = document.getElementById('brown');
+const fillButton = document.getElementById('fill');
 const timer = document.getElementById('timer');
 const waitingScreen = document.getElementById('waitingScreen');
 
@@ -51,19 +53,27 @@ const waitingScreen = document.getElementById('waitingScreen');
     });
 
     greenButton.addEventListener('click', () => {
-        currentColour = '#00ff99';
+        currentColour = '#33ccff';
     });
 
     blueButton.addEventListener('click', () => {
-        currentColour = '#00ffff';
+        currentColour = '#996633';
     });
 
     redButton.addEventListener('click', () => {
-        currentColour = '#ff0000';
+        currentColour = '#ffcc00';
     });
 
     brownButton.addEventListener('click', () => {
         currentColour = '#663300';
+    });
+
+    fillButton.addEventListener('click', () => {
+        if(isFilling === true) {
+            isFilling = false;
+        } else {
+            isFilling = true;
+        }
     });
 
     newGameBtn.addEventListener('click', () => {
@@ -121,8 +131,13 @@ function init() {
     
 }
 
-function mousedown() {
+function mousedown(data) {
     dragging = true;
+    if(isFilling){
+        imageData = ctx.getImageData(0, 0, 600, 300);
+        fill(data.offsetX, data.offsetY, currentColour);
+        return;
+    }
 }
 
 function mouseup() {
@@ -140,8 +155,6 @@ function isInsideOfCanvas() {
 
 function drag(data) {
     if (dragging === true && gameActive === true) {
-        console.log(data.clientX);
-        console.log(canvas.offsetRight);
 
         let paintData = {
             x: data.offsetX,
@@ -149,7 +162,7 @@ function drag(data) {
             colour: currentColour,
         }
 
-        if (!mouseInCanvas) {
+        if(!mouseInCanvas) {
             previousPixel.start = true;
             return;
         }
@@ -291,4 +304,28 @@ function updateTime(currentTime) {
     if (currentTime < 0) {
         timer.innerText = "Round Over!";
     }
+}
+
+function fill(x, y, colour) {
+    imageDataIdx = (y * canvas.width + x) * 4;
+    if(!(imageData.data[imageDataIdx] === 247 && imageData.data[imageDataIdx + 1] === 240, imageData.data[imageDataIdx + 2] === 240)){
+        return;
+    } else if(!mouseInCanvas){
+        return;
+    } else if(x < 1 || x > canvas.width-1 || y < 1 || y > canvas.height-1){
+        return;
+    } else {
+        console.log(imageData.data[imageDataIdx], imageData.data[imageDataIdx + 1], imageData.data[imageDataIdx + 2]);
+        while(imageData.data[imageDataIdx] === 247 && imageData.data[imageDataIdx + 1] === 240, imageData.data[imageDataIdx + 2] === 240) {
+            ctx.fillStyle = '#fffff';
+            ctx.fillRect(x, y, 1, 1);
+            y += 1;
+            imageDataIdx = (y * canvas.width + x) * 4;
+        }
+        fill(x+1, y, colour);
+    }
+}
+
+function updateCurrentPaint(player) {
+    currentPaint = player.paint;
 }
