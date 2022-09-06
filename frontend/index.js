@@ -45,6 +45,7 @@ const redButton = document.getElementById('red');
 const brownButton = document.getElementById('brown');
 const timer = document.getElementById('timer');
 const waitingScreen = document.getElementById('waitingScreen');
+const playAgainButton = document.getElementById('playAgain');
 
     defaultButton.addEventListener('click', () => {
         currentColour = '#666666';
@@ -76,6 +77,9 @@ const waitingScreen = document.getElementById('waitingScreen');
         socket.emit('joinGame', gameCodeInput.value);
     });
 
+    playAgainButton.addEventListener('click', () => {
+        reset();
+    });
 
 function setPlayerNumber(number) {
     playerNumber = number;
@@ -178,6 +182,9 @@ function fillInPrevPixels(currPixelX, currPixelY, prevPixelX, prevPixelY, start,
         previousPixel.start = false;
         return;
     }
+    if(gameActive === false){
+        return;
+    }
     ctx.fillStyle = currColour;
     ctx.fillRect(currPixelX, currPixelY, 5, 5);
     socket.emit('drag', {x:currPixelX, y:currPixelY, colour:currentColour})
@@ -247,6 +254,7 @@ function reset() {
     gameCodeDisplay.innerText = "";
     initialScreen.style.display = "block";
     gameScreen.style.display = "none";
+    playAgainButton.style.display = "none";
 }
 
 function handleGameOver(state) {
@@ -260,6 +268,7 @@ function handleGameOver(state) {
     brownButton.style.display = 'none';
     canvas2.style.display = 'flex';
     canvas.style.display = 'flex';
+    playAgainButton.style.display = 'block';
 
     canvas.height = 600;
     canvas2.height = canvas2.width = 600;
