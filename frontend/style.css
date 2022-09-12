@@ -11,54 +11,33 @@
     top: 40%;
 }
 
-#default {
+.colourButton {
     width: 50px;
     height: 50px;
-    background-color: #666666;
     stroke-width: 6;
     stroke: black;
     border-radius: 10px;
     margin: 15px;
+}
+
+#default {
+    background-color: #666666;
 }
 
 #green {
-    width: 50px;
-    height: 50px;
-    background-color: #00ff99;
-    stroke-width: 6;
-    stroke: black;
-    border-radius: 10px;
-    margin: 15px;
+    background-color: #33ccff;
 }
 
 #blue {
-    width: 50px;
-    height: 50px;
-    background-color: #00ffff;
-    stroke-width: 6;
-    stroke: black;
-    border-radius: 10px;
-    margin: 15px;
+    background-color: #996633;
 }
 
 #red {
-    width: 50px;
-    height: 50px;
-    background-color: #ff0000;
-    stroke-width: 6;
-    stroke: black;
-    border-radius: 10px;
-    margin: 15px;
+    background-color: #ffcc00;
 }
 
 #brown {
-    width: 50px;
-    height: 50px;
     background-color: #663300;
-    stroke-width: 6;
-    stroke: black;
-    border-radius: 10px;
-    margin: 15px;
 }
 
 #playAgain {

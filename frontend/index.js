@@ -52,15 +52,15 @@ const playAgainButton = document.getElementById('playAgain');
     });
 
     greenButton.addEventListener('click', () => {
-        currentColour = '#00ff99';
+        currentColour = '#33ccff';
     });
 
     blueButton.addEventListener('click', () => {
-        currentColour = '#00ffff';
+        currentColour = '#996633';
     });
 
     redButton.addEventListener('click', () => {
-        currentColour = '#ff0000';
+        currentColour = '#ffcc00';
     });
 
     brownButton.addEventListener('click', () => {
