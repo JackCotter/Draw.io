@@ -1,6 +1,6 @@
 
 
-const socket = io();
+const socket = io('https://desolate-gorge-70247.herokuapp.com/');
 socket.on('connect', () => {
     console.log(socket.id);
 });
@@ -35,6 +35,7 @@ const gameScreen = document.getElementById('gameScreen');
 const initialScreen = document.getElementById('initialScreen');
 const newGameBtn = document.getElementById('newGameButton');
 const joinGameBtn = document.getElementById('joinGameButton');
+const howToPlayBtn = document.getElementById('howToPlayButton');
 const gameCodeInput = document.getElementById('gameCodeInput');
 const gameCodeDisplay = document.getElementById('gameCodeDisplay');
 const gameInstructions = document.getElementById('gameInstructions');
@@ -79,6 +80,10 @@ const playAgainButton = document.getElementById('playAgain');
 
     playAgainButton.addEventListener('click', () => {
         reset();
+    });
+
+    howToPlayBtn.addEventListener('click', () => {
+        alert('Welcome! Once the game starts, draw the suggested body section and connect it to the red line. Keep an eye on the timer.');
     });
 
 function setPlayerNumber(number) {

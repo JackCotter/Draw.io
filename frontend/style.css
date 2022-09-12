@@ -20,6 +20,10 @@
     margin: 15px;
 }
 
+#howToPlayButton {
+    margin: 10px;
+}
+
 #default {
     background-color: #666666;
 }
