@@ -11,25 +11,21 @@ const path = require('path');
 const http = require('http').createServer(app);
 const port = process.env.PORT || 8080;
 
-const io = require('socket.io')(http, {
-    cors: {
-        origin: "*"
-    }
-});
+const io = socketIO(http);
 
 app.use(express.static('./'));
 
 app.get(TWO_PLAYER_DIRECTORY, (req,res) => {
     res.sendFile(path.join(__dirname, "../frontend/index.html"));
-})
+});
 
 app.get('/index.js', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/index.js'));
-})
+});
 
 app.get('/style.css', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/style.css'));
-})
+});
 
 
 
