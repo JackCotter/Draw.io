@@ -11,7 +11,11 @@ const path = require('path');
 const http = require('http').createServer(app);
 const port = process.env.PORT || 8080;
 
-const io = socketIO(http);
+const io = require('socket.io')(http, {
+    cors: {
+        origin: "*"
+    }
+});
 
 app.use(express.static('./'));
 
