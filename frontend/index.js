@@ -1,6 +1,6 @@
 
 
-const socket = io('https://desolate-gorge-70247.herokuapp.com/');
+const socket = io();
 socket.on('connect', () => {
     console.log(socket.id);
 });
