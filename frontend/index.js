@@ -1,9 +1,7 @@
 
 
 const socket = io();
-socket.on('connect', () => {
-    console.log(socket.id);
-});
+socket.on('connect', () => {});
 
 socket.on('paint', paintGame);
 socket.on('playerNumber', setPlayerNumber);
@@ -74,7 +72,6 @@ const playAgainButton = document.getElementById('playAgain');
     });
 
     joinGameBtn.addEventListener('click', () => {
-        console.log('joining' + gameCodeInput.value)
         socket.emit('joinGame', gameCodeInput.value);
     });
 
@@ -96,7 +93,6 @@ function setupWaitingScreen() {
 }
 
 function handleGameCode(gameCode) {
-    console.log(gameCode);
     gameCodeDisplay.innerText = gameCode;
 }
 
@@ -149,8 +145,6 @@ function isInsideOfCanvas() {
 
 function drag(data) {
     if (dragging === true && gameActive === true) {
-        console.log(data.clientX);
-        console.log(canvas.offsetRight);
 
         let paintData = {
             x: data.offsetX,
@@ -264,7 +258,6 @@ function reset() {
 
 function handleGameOver(state) {
     gameActive = false;
-    console.log(state);
     gameInstructions.innerText = "nothing!";
     defaultButton.style.display = 'none';
     greenButton.style.display = 'none';
