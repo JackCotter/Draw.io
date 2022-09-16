@@ -13,7 +13,7 @@ const port = process.env.PORT || 8080;
 
 const io = require('socket.io')(http, {
     cors: {
-        origin: "*"
+        origin: "https://salty-fjord-19131.herokuapp.com/"
     }
 });
 
