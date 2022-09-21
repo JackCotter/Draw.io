@@ -1,9 +1,7 @@
 
 
 const socket = io();
-socket.on('connect', () => {
-    console.log(socket.id);
-});
+socket.on('connect', () => {});
 
 socket.on('paint', paintGame);
 socket.on('playerNumber', setPlayerNumber);
@@ -74,7 +72,6 @@ const playAgainButton = document.getElementById('playAgain');
     });
 
     joinGameBtn.addEventListener('click', () => {
-        console.log('joining' + gameCodeInput.value)
         socket.emit('joinGame', gameCodeInput.value);
     });
 
@@ -83,7 +80,7 @@ const playAgainButton = document.getElementById('playAgain');
     });
 
     howToPlayBtn.addEventListener('click', () => {
-        alert('Welcome! Once the game starts, draw the suggested body section and connect it to the red line. Keep an eye on the timer.');
+        //alert('Welcome! Once the game starts, draw the suggested body section and connect it to the red line. Keep an eye on the timer. Once both rounds are over, you will see what you and your teammate created!');
     });
 
 function setPlayerNumber(number) {
@@ -96,7 +93,6 @@ function setupWaitingScreen() {
 }
 
 function handleGameCode(gameCode) {
-    console.log(gameCode);
     gameCodeDisplay.innerText = gameCode;
 }
 
@@ -149,8 +145,6 @@ function isInsideOfCanvas() {
 
 function drag(data) {
     if (dragging === true && gameActive === true) {
-        console.log(data.clientX);
-        console.log(canvas.offsetRight);
 
         let paintData = {
             x: data.offsetX,
@@ -217,7 +211,7 @@ function handleGameInstructions(currentInstructions) {
 
 function drawGameInstructions() {
     gameInstructions.innerText = instructions;
-    if(instructions === "head") {
+    if(instructions === "upper body") {
         ctx.fillStyle = GUIDE_COLOUR;
         ctx.fillRect(275, 290, 5, 10);
         ctx.fillRect(325, 290, 5, 10);
@@ -264,7 +258,6 @@ function reset() {
 
 function handleGameOver(state) {
     gameActive = false;
-    console.log(state);
     gameInstructions.innerText = "nothing!";
     defaultButton.style.display = 'none';
     greenButton.style.display = 'none';
@@ -291,10 +284,10 @@ function handleGameOver(state) {
 }
 
 function handleNewRound() {
-    if(gameInstructions.innerText === "head") {
+    if(gameInstructions.innerText === "upper body") {
         handleGameInstructions("legs");
     } else if(gameInstructions.innerText === "legs") {
-        handleGameInstructions("head");
+        handleGameInstructions("upper body");
     } 
     
     init();

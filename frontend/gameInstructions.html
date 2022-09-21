@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>3 Player Drawing</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <style>
+            #centeredParagraph{
+                width: 50%;
+                
+                display:block;
+                margin:auto;
+            }
+            #instructionTitle{
+                width: 50%;
+                margin:auto;
+                padding: 15px;
+            }
+            #returnButton{
+                padding-bottom: 20px;
+            }
+            .center{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .gif{
+                display:block;
+                margin:auto;
+                width: 60%;
+                height: 60%;
+            }
+            .gifContainer {
+                border-top-width: 40px;
+                border-width: 10px;
+                border-color: #28a745;
+            }
+            .centerJustified{
+                display:block;
+                margin:auto;
+                width: 50%;
+            }
+        </style>
+    </head>
+    <body>
+        <section class="vh-100">
+            <div class="center">
+                <div id = centeredParagraph>
+                <h1 id="instructionTitle">Game Instructions</h1>
+                <p>
+                    Welcome! In this drawing game, you work with a partner to create two separate characters. You will draw one half of the character
+                    while your partner will draw the other half. Here's the catch: you will not be able to see the other half until after you have finished drawing! <br><br>
+                    When you are ready, you can start the game by clicking on the "Create New Game" button. The game will then display a game code which you can copy and send to your friend.
+                </p>
+                <div class="gifContainer">
+                    <img src="https://media.giphy.com/media/ICgZjAAyYP6ljm4ZMG/giphy.gif" class="gif">
+                </div>
+                <p>
+                    Once your friend recieves the game code, they can paste it into the text box and click on the "Join Game" button. This will start the game for both players.
+                </p>
+                <div class="gifContainer">
+                    <img src="https://media.giphy.com/media/R6SV02jejqTZ5CX88j/giphy.gif" class="gif">
+                </div>
+                <p>
+                    Once the game starts, you are ready to start drawing! Start by selecting a colour using the colour buttons underneath the canvas. 
+                    Once you have selected the colour you would like to start with, you can start drawing by clicking and draggin the mouse on the canvas. 
+                    Not sure what you are supposed to draw? Look at the prompt above!
+                </p>
+                <div class="gifContainer">
+                    <img src="https://media.giphy.com/media/dAP2gvdJsiMnAoYxnV/giphy.gif" class="gif">
+                </div>
+                <p>
+                    Once the round timer is up, the canvas will clear and the drawing prompt will change. In this new prompt, the player is drawing the legs of the final character. 
+                    Make sure to connect your drawing to the red guides!
+                </p>
+                <div class="gifContainer">
+                    <img src="https://media.giphy.com/media/NdEj8C0GaP01dESpqD/giphy.gif" class="gif">
+                </div>
+                <p>
+                    Once the timer is up, you will see the characters you have created. You can admire your pictures, or hit the "Play Again" button to go back to the home screen.
+                </p>
+                <div>
+                    <div class="center">
+                        <a href="./" id="returnButton">
+                        <button
+                        type="submit"
+                        class="btn btn-success"
+                        >
+                        Return to Game
+                        </button>
+                        </a>
+                    </div>
+                </div>
+                
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

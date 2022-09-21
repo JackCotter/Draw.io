@@ -2,7 +2,7 @@ const { initGame, addPaint, gameOverDisplay } = require('./game');
 const { makeid } = require('./utils');
 
 const TWO_PLAYER_DIRECTORY = '/';
-const GAME_TIME = 10000;
+const GAME_TIME = 30000;
 
 const express = require('express');
 const app = express();
@@ -31,6 +31,10 @@ app.get('/style.css', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/style.css'));
 });
 
+app.get('/gameInstructions.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/gameInstructions.html'));
+});
+
 
 
 const state = {};
@@ -53,7 +57,7 @@ io.on('connection', client => {
         client.join(roomName);
         client.number = 1;
         client.emit('playerNumber', 1);
-        client.emit('gameInstructions', "head");
+        client.emit('gameInstructions', "upper body");
     }
 
     async function handleJoinGame(roomName){
@@ -100,18 +104,6 @@ io.on('connection', client => {
             }, 1000);
         }
         checkIfActive();
-        
-
-        /*setTimeout(() => {
-            io.sockets.in(roomName).emit("newRound");
-            updateRoomNumbers(roomName);
-            setTimeout(() => {
-                gameOverDisplay(state[roomName]);
-                emitGameOver(roomName);
-                state[roomName] = null;
-            }, GAME_TIME);
-        },GAME_TIME);*/
-        
     }
 
     function emitGameOver(roomName) {
